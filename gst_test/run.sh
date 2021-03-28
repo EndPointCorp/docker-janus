@@ -10,4 +10,4 @@ gst-launch-1.0 -v videotestsrc is-live=true \
 ! queue \
 ! vp8enc deadline=33333 cpu-used=16 target-bitrate=$BITRATE keyframe-max-dist=90 max-quantizer=24 \
 ! rtpvp8pay \
-! udpsink host=127.0.0.1 port=6000 sync=false qos=true
+! udpsink host=janus port=6000 sync=false qos=true
