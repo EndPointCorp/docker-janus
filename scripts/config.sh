@@ -40,13 +40,18 @@ cert_key = $DEPS_HOME/certs/janus.key
 EOF
 
 cat << EOF > $DEPS_HOME/etc/janus/janus.plugin.streaming.cfg
-[stream0]
+
+[gstreamer-sample]
 type = rtp
 id = 1
-description = stream
-audio = no
+description = Opus/VP8 live stream coming from gstreamer
+audio = yes
 video = yes
-videoport = 6000
-videopt = 96
+audioport = 5002
+audiopt = 111
+audiortpmap = opus/48000/2
+videoport = 5004
+videopt = 100
 videortpmap = VP8/90000
+secret = adminpwd
 EOF

@@ -1,15 +1,14 @@
 # docker-janus
 
-Run up a [janus-gateway](https://github.com/meetecho/janus-gateway) instance using docker.
+Run up a [janus-gateway](https://github.com/meetecho/janus-gateway) instance using docker, 
 
-## Streaming test
+## Demonstration of streaming camera audio + video to web browser
 
-1. Install docker and GStreamer 1.0.
+1. install docker-compose
+2. run `VIDEO_DEVICE=/dev/video0 ALSA_DEVICE=plughw:2,0 docker-compose up` 
+    assuming that your camera has `/dev/video0` device and your recording audio source is
+    at plughw:2,0
+3. open browser at http://localhost:8000
 
-2. Build this image with `make image`
+you should see a view of camera and hear sounds from your microphone
 
-3. Run the Janus server with `make run`.  This will forward some ports: 8088/tcp (HTTP), 8188/tcp (WebSocket), 6000/udp (RTP)
-
-4. Run `./gst_test.sh` to start sending RTP to Janus.
-
-5. Start an HTTP server in `webapps/` and browse to the index.  You should see a test pattern.

@@ -49,6 +49,6 @@ RUN $SCRIPTS_PATH/janus.sh
 COPY scripts/config.sh $SCRIPTS_PATH/
 RUN $SCRIPTS_PATH/config.sh
 
-EXPOSE 8188 8189 6000/udp
+EXPOSE 8188 8189 5002/udp 5004/udp
 
 CMD ["/root/janus/bin/janus"]

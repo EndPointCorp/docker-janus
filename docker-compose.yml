@@ -1,0 +1,26 @@
+version: '3.1'
+services:
+    webapp:
+        image: python:3.9
+        ports:
+            - "8000:8000"
+        command: python3 -m http.server --directory=/webapp
+        volumes:
+            - ./webapp:/webapp
+    janus:
+        build: .
+        ports:
+            - "8188:8188"
+            - "8189:8189"
+            - "5002:5002/udp"
+            - "5004:5004/udp"
+    videosrc:
+        build: gst_test
+        volumes:
+            - /dev/video0:/dev/video0
+            - /dev/snd:/dev/snd
+        environment:
+            JANUS_SERVER: janus
+            VIDEO_DEVICE:
+            ALSA_DEVICE:
+        privileged: true
