@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -e
-git clone https://github.com/warmcat/libwebsockets.git -b v2.4-stable --depth 1 $DEPS_HOME/dl/libwebsockets
+git clone https://github.com/warmcat/libwebsockets.git -b v4.3.2 --depth 1 $DEPS_HOME/dl/libwebsockets
 cd $DEPS_HOME/dl/libwebsockets
 mkdir build
 cd build

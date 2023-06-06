@@ -1,8 +1,8 @@
 #!/bin/sh
 
-WIDTH=1920
-HEIGHT=1080
-BITRATE=1024000
+WIDTH=640
+HEIGHT=480
+BITRATE=102400
 
 gst-launch-1.0 -v videotestsrc is-live=true \
 ! capsfilter caps=video/x-raw,width=$WIDTH,height=$HEIGHT,framerate=30/1 \

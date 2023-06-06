@@ -2,20 +2,19 @@
 <html>
 <head>
 <title>Test Stream</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/webrtc-adapter/6.4.0/adapter.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/webrtc-adapter/8.2.2/adapter.min.js"></script>
 <script src="https://janus.conf.meetecho.com/janus.js"></script>
 </head>
 <body>
 <div id="stream"></div>
 <script type="text/javascript">
-var playing = false;
 var janus;
 var streamHandle;
 var streamDiv = document.getElementById('stream');
 
 (function init() {
   Janus.init({
-    debug: "all",
+    debug: true,
     dependencies: Janus.useDefaultDependencies(),
     callback: function() {
       console.log('janus initialized');
@@ -38,6 +37,7 @@ function establish() {
       console.error(cause);
     },
     destroyed: function() {
+      console.log('destroyed');
     }
   });
 }
@@ -61,7 +61,7 @@ function attach() {
         console.log('handling sdp:', jsep);
         streamHandle.createAnswer({
           jsep: jsep,
-          media: { audioSend: false, videoSend: false },
+          tracks: [],
           success: function(ourJsep) {
             var body = { request: 'start' };
             streamHandle.send({ message: body, jsep: ourJsep });
@@ -72,29 +72,54 @@ function attach() {
         });
       }
     },
-    onremotestream: function(stream) {
-      if (playing) return;
-      playing = true;
-      console.log('got remote stream:', stream);
-      var video = document.createElement('video');
-      video.muted = true;
-      video.playsinline = true;
-      video.autoplay = true;
-      streamDiv.appendChild(video);
-      Janus.attachMediaStream(video, stream);
+    onremotetrack: function(track, mid, on, metadata) {
+      console.log('got remote track:', track);
+      console.log('with metadata:', metadata);
+      if (track.kind !== 'video') {
+        console.log('ignoring non-video track');
+        return;
+      }
+      if (!metadata) {
+        console.log('no metadata, ignoring');
+        return;
+      }
+      if (metadata.reason === 'unmute') {
+        console.log('unmute');
+      } else if (metadata.reason === 'mute') {
+        console.log('mute');
+        /*
+        streamDiv.removeChild(video);
+        video.srcObject = null;
+        video.remove();
+        video = null;
+        */
+      } else if (metadata.reason === 'created') {
+        console.log('created');
+        var video = document.createElement('video');
+        video.muted = true;
+        video.playsinline = true;
+        video.autoplay = true;
+        streamDiv.appendChild(video);
+        let stream = new MediaStream([track]);
+        Janus.attachMediaStream(video, stream);
+      }
     }
   });
 }
 
 function getStreams() {
-  console.log('gstStreams()');
+  console.log('getStreams()');
   var body = { request: 'list' };
   streamHandle.send({
     message: body,
     success: function(response) {
       console.log('stream list response:', response);
-      var firstId = response.list[0].id;
-      startStream(firstId);
+      var firstId = response.list[9].id;
+      for (var resp of response.list) {
+        if (resp.id === 50) {
+          startStream(resp.id);
+        }
+      }
     },
     error: function (cause) {
       console.error(cause);
