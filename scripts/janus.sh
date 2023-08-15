@@ -13,11 +13,9 @@ openssl req \
   -keyout $DEPS_HOME/certs/janus.key \
   -out $DEPS_HOME/certs/janus.pem
 
-wget https://github.com/meetecho/janus-gateway/archive/$JANUS_RELEASE.tar.gz -O  $DEPS_HOME/dl/janus.tar.gz
-
 cd $DEPS_HOME/dl
-tar xf janus.tar.gz
-cd janus-gateway-*
+git clone https://github.com/EndPointCorp/janus-gateway.git -b ib-capture-time --depth=1
+cd janus-gateway
 ./autogen.sh
 
 ./configure --prefix=$DEPS_HOME --enable-websockets --disable-rabbitmq --disable-mqtt --disable-data-channels --disable-docs
